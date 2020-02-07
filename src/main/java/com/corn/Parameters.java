@@ -19,17 +19,17 @@ import static java.lang.System.exit;
  */
 public class Parameters {
 
-	public static final String FROM             = "f";
-	public static final String TO               = "t";
-	public static final String HEAD             = "h";
-	public static final String FILE             = "file";
-	public static final String POS              = "p";
-	public static final String GREP             = "g";
-	public static final String HELP             = "help";
-	public static final String COUNT_LINES      = "cl";
-	public static final String FMT              = "fmt";
-	public static final String DEFAULT_DATE_FMT = "yyyy-MM-dd HH:mm:ss.SSS";
-	private static Pattern posPattern = Pattern.compile("^(%\\d+)+");
+	public static final String  FROM             = "f";
+	public static final String  TO               = "t";
+	public static final String  HEAD             = "h";
+	public static final String  FILE             = "file";
+	public static final String  POS              = "p";
+	public static final String  GREP             = "g";
+	public static final String  HELP             = "help";
+	public static final String  COUNT_LINES      = "cl";
+	public static final String  FMT              = "fmt";
+	public static final String  DEFAULT_DATE_FMT = "yyyy-MM-dd HH:mm:ss.SSS";
+	private static      Pattern posPattern       = Pattern.compile("^(%\\d+)+");
 
 	private final Instant       from;
 	private final Instant       to;
@@ -50,7 +50,7 @@ public class Parameters {
 				.addOption(Option.builder(GREP).longOpt("grep").hasArg().desc("Prints only lines containing <string>").argName("string").build())
 				.addOption(Option.builder(HELP).longOpt(HELP).hasArg(false).desc("Help").argName("string").build())
 				.addOption(Option.builder(COUNT_LINES).longOpt("count-lines").hasArg(false).desc("Counts printing lines").build())
-				.addOption(Option.builder(FMT).longOpt("time-format").hasArg().desc("Date/time format (using Java DateTimeFormatter). By default - "+DEFAULT_DATE_FMT).argName("format").build());
+				.addOption(Option.builder(FMT).longOpt("time-format").hasArg().desc("Date/time format (using Java DateTimeFormatter). By default - " + DEFAULT_DATE_FMT).argName("format").build());
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine       cmd    = parser.parse(options, args);
@@ -100,18 +100,22 @@ public class Parameters {
 	}
 
 	private List<Integer> parsePos(String posStr) throws ParseException {
-		String[] pos = posStr.substring(1).split("%");
-		if (!posPattern.matcher(posStr).matches())
-			throw new ParseException("Pos should contain <segments> in format %num1%num2..%numN");
-		else {
+		if (posPattern.matcher(posStr).matches()) {
+			String[] pos = posStr.substring(1).split("%");
 			return Arrays.stream(pos).map(Integer::parseInt).collect(Collectors.toList());
+		} else {
+			throw new ParseException("Pos should contain <segments> in format %num1%num2..%numN");
 		}
 	}
 
-	private Instant parseDate(String dt) {
-		DateTimeFormatter fmt = DateTimeFormatter.ofPattern(dateFmt, Locale.US);
-		LocalDateTime     ldt = LocalDateTime.parse(dt, fmt);
-		return ldt.toInstant(ZoneOffset.UTC);
+	private Instant parseDate(String dt) throws ParseException {
+		try {
+			DateTimeFormatter fmt = DateTimeFormatter.ofPattern(dateFmt, Locale.US);
+			LocalDateTime     ldt = LocalDateTime.parse(dt, fmt);
+			return ldt.toInstant(ZoneOffset.UTC);
+		} catch (Exception e) {
+			throw new ParseException(e.getMessage());
+		}
 	}
 
 	public Instant getFrom() {
