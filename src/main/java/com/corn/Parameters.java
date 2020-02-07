@@ -19,17 +19,17 @@ import static java.lang.System.exit;
  */
 public class Parameters {
 
-	public static final String  FROM             = "f";
-	public static final String  TO               = "t";
-	public static final String  HEAD             = "h";
-	public static final String  FILE             = "file";
-	public static final String  POS              = "p";
-	public static final String  GREP             = "g";
-	public static final String  HELP             = "help";
-	public static final String  COUNT_LINES      = "cl";
-	public static final String  FMT              = "fmt";
-	public static final String  DEFAULT_DATE_FMT = "yyyy-MM-dd HH:mm:ss.SSS";
-	private static      Pattern posPattern       = Pattern.compile("^(%\\d+)+");
+	public static final  String  FROM             = "f";
+	public static final  String  TO               = "t";
+	public static final  String  HEAD             = "h";
+	public static final  String  FILE             = "file";
+	public static final  String  POS              = "p";
+	public static final  String  GREP             = "g";
+	public static final  String  HELP             = "help";
+	public static final  String  COUNT_LINES      = "cl";
+	public static final  String  FMT              = "fmt";
+	public static final  String  DEFAULT_DATE_FMT = "yyyy-MM-dd HH:mm:ss.SSS";
+	private static final Pattern posPattern       = Pattern.compile("^(%\\d+)+");
 
 	private final Instant       from;
 	private final Instant       to;
