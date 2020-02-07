@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.lang.System.exit;
@@ -28,6 +29,7 @@ public class Parameters {
 	public static final String COUNT_LINES      = "cl";
 	public static final String FMT              = "fmt";
 	public static final String DEFAULT_DATE_FMT = "yyyy-MM-dd HH:mm:ss.SSS";
+	private static Pattern posPattern = Pattern.compile("^(%\\d+)+");
 
 	private final Instant       from;
 	private final Instant       to;
@@ -97,10 +99,10 @@ public class Parameters {
 			to = null;
 	}
 
-	private List<Integer> parsePos(String posStr) {
+	private List<Integer> parsePos(String posStr) throws ParseException {
 		String[] pos = posStr.substring(1).split("%");
-		if (pos.length == 0)
-			throw new RuntimeException("Empty pos");
+		if (!posPattern.matcher(posStr).matches())
+			throw new ParseException("Pos should contain <segments> in format %num1%num2..%numN");
 		else {
 			return Arrays.stream(pos).map(Integer::parseInt).collect(Collectors.toList());
 		}
