@@ -15,7 +15,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
-    <!-- Project dependencies -->
     <dependencies>
         <dependency>
             <groupId>commons-cli</groupId>

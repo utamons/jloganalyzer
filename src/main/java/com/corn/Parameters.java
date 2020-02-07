@@ -107,7 +107,7 @@ public class Parameters {
 	}
 
 	private Instant parseDate(String dt) {
-		DateTimeFormatter fmt = DateTimeFormatter.ofPattern(dateFmt, Locale.UK);
+		DateTimeFormatter fmt = DateTimeFormatter.ofPattern(dateFmt, Locale.US);
 		LocalDateTime     ldt = LocalDateTime.parse(dt, fmt);
 		return ldt.toInstant(ZoneOffset.UTC);
 	}
