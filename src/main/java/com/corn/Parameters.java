@@ -2,10 +2,12 @@ package com.corn;
 
 import org.apache.commons.cli.*;
 
+import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +37,7 @@ public class Parameters {
 	private final Instant       from;
 	private final Instant       to;
 	private final long          head;
-	private final List<String>  files;
+	private final List<File>    files;
 	private final List<Integer> pos;
 	private final boolean       count;
 	private final String        dateFmt;
@@ -76,7 +78,7 @@ public class Parameters {
 			try {
 				grepPattern = Pattern.compile(cmd.getOptionValue(GREP));
 			} catch (PatternSyntaxException e) {
-				throw new ParseException("Regexp error - "+e.getMessage());
+				throw new ParseException("Regexp error - " + e.getMessage());
 			}
 		} else
 			grepPattern = null;
@@ -96,9 +98,19 @@ public class Parameters {
 		else
 			to = null;
 
-		files = cmd.getArgList();
-		if (files.isEmpty())
+		List<String> fileNames = cmd.getArgList();
+		if (fileNames.isEmpty())
 			throw new ParseException("No files to process.");
+		else {
+			files = new ArrayList<>();
+			for (String f : fileNames) {
+				File file = new File(f);
+				if (!file.exists())
+					throw new ParseException("File " + f + " not found.");
+				else
+					files.add(file);
+			}
+		}
 	}
 
 	private List<Integer> parsePos(String posStr) throws ParseException {
@@ -136,7 +148,7 @@ public class Parameters {
 		return head;
 	}
 
-	public List<String> getFiles() {
+	public List<File> getFiles() {
 		return files;
 	}
 
@@ -161,7 +173,7 @@ public class Parameters {
 				", files='" + files + '\'' +
 				", pos=" + pos +
 				", count=" + count +
-				", grep='" + (grepPattern == null? null : grepPattern.pattern()) + '\'' +
+				", grep='" + (grepPattern == null ? null : grepPattern.pattern()) + '\'' +
 				", dateFmt='" + dateFmt + '\'' +
 				'}';
 	}
