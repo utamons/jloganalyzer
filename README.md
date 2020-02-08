@@ -12,7 +12,7 @@ And that's fun after all..
  usage: jloganalyzer [options] file1 file2 ... fileN
  
  -cl,--count-lines             Counts printing lines
- -f,--from <date_from>_        The date/time to read log fro
+ -f,--from <date_from>        The date/time to read log fro
  -fmt,--time-format <format>   Date/time format (using JavaDateTimeFormatter). By default - yyyy-MM-dd HH:mm:ss.SSS
  -g,--grep <string>            Prints only lines containing <string>
  -h,--head <lines>             Only prints the first head <lines>
