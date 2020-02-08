@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import static java.lang.System.exit;
@@ -22,7 +23,6 @@ public class Parameters {
 	public static final  String  FROM             = "f";
 	public static final  String  TO               = "t";
 	public static final  String  HEAD             = "h";
-	public static final  String  FILE             = "file";
 	public static final  String  POS              = "p";
 	public static final  String  GREP             = "g";
 	public static final  String  HELP             = "help";
@@ -31,23 +31,22 @@ public class Parameters {
 	public static final  String  DEFAULT_DATE_FMT = "yyyy-MM-dd HH:mm:ss.SSS";
 	private static final Pattern posPattern       = Pattern.compile("^(%\\d+)+");
 
+	private final Pattern       grepPattern;
 	private final Instant       from;
 	private final Instant       to;
 	private final long          head;
-	private final String        file;
+	private final List<String>  files;
 	private final List<Integer> pos;
 	private final boolean       count;
-	private final String        grep;
 	private final String        dateFmt;
 
 	public Parameters(String[] args) throws ParseException {
 		Options options = new Options()
 				.addOption(Option.builder(FROM).longOpt("from").hasArg().desc("The date/time to read log from").argName("date_from").build())
 				.addOption(Option.builder(TO).longOpt("to").hasArg().desc("The date/time to read log to").argName("date_to").build())
-				.addOption(Option.builder(HEAD).longOpt("head").hasArg().desc("Only print the first head <lines>").argName("lines").build())
-				.addOption(Option.builder(FILE).longOpt(FILE).hasArg().desc("Path to the log file").argName("path").build())
+				.addOption(Option.builder(HEAD).longOpt("head").hasArg().desc("Only prints the first head <lines>").argName("lines").build())
 				.addOption(Option.builder(POS).longOpt("pos").hasArg().desc("Prints only given <segments> of line in %1%2.. format").argName("segments").build())
-				.addOption(Option.builder(GREP).longOpt("grep").hasArg().desc("Prints only lines containing <string>").argName("string").build())
+				.addOption(Option.builder(GREP).longOpt("grep").hasArg().desc("Prints only lines matching <regexp>").argName("regexp").build())
 				.addOption(Option.builder(HELP).longOpt(HELP).hasArg(false).desc("Help").argName("string").build())
 				.addOption(Option.builder(COUNT_LINES).longOpt("count-lines").hasArg(false).desc("Counts printing lines").build())
 				.addOption(Option.builder(FMT).longOpt("time-format").hasArg().desc("Date/time format (using Java DateTimeFormatter). By default - " + DEFAULT_DATE_FMT).argName("format").build());
@@ -57,7 +56,7 @@ public class Parameters {
 
 		if (cmd.hasOption(HELP) || args.length == 0) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("jloganalyzer -file logfile [options]", options);
+			formatter.printHelp("jloganalyzer [options] file1 file2 ... fileN", options);
 			exit(0);
 		}
 
@@ -66,11 +65,6 @@ public class Parameters {
 		else
 			head = 0L;
 
-		if (cmd.hasOption(FILE))
-			file = cmd.getOptionValue(FILE);
-		else
-			throw new ParseException("Path to the log file is required");
-
 		count = cmd.hasOption(COUNT_LINES);
 
 		if (cmd.hasOption(POS))
@@ -78,10 +72,14 @@ public class Parameters {
 		else
 			pos = null;
 
-		if (cmd.hasOption(GREP))
-			grep = cmd.getOptionValue(GREP);
-		else
-			grep = null;
+		if (cmd.hasOption(GREP)) {
+			try {
+				grepPattern = Pattern.compile(cmd.getOptionValue(GREP));
+			} catch (PatternSyntaxException e) {
+				throw new ParseException("Regexp error - "+e.getMessage());
+			}
+		} else
+			grepPattern = null;
 
 		if (cmd.hasOption(FMT))
 			dateFmt = cmd.getOptionValue(FMT);
@@ -97,6 +95,10 @@ public class Parameters {
 			to = parseDate(cmd.getOptionValue(TO));
 		else
 			to = null;
+
+		files = cmd.getArgList();
+		if (files.isEmpty())
+			throw new ParseException("No files to process.");
 	}
 
 	private List<Integer> parsePos(String posStr) throws ParseException {
@@ -118,6 +120,10 @@ public class Parameters {
 		}
 	}
 
+	public Pattern getGrepPattern() {
+		return grepPattern;
+	}
+
 	public Instant getFrom() {
 		return from;
 	}
@@ -130,8 +136,8 @@ public class Parameters {
 		return head;
 	}
 
-	public String getFile() {
-		return file;
+	public List<String> getFiles() {
+		return files;
 	}
 
 	public List<Integer> getPos() {
@@ -140,10 +146,6 @@ public class Parameters {
 
 	public boolean isCount() {
 		return count;
-	}
-
-	public String getGrep() {
-		return grep;
 	}
 
 	public String getDateFmt() {
@@ -156,10 +158,10 @@ public class Parameters {
 				"from=" + from +
 				", to=" + to +
 				", head=" + head +
-				", file='" + file + '\'' +
+				", files='" + files + '\'' +
 				", pos=" + pos +
 				", count=" + count +
-				", grep='" + grep + '\'' +
+				", grep='" + (grepPattern == null? null : grepPattern.pattern()) + '\'' +
 				", dateFmt='" + dateFmt + '\'' +
 				'}';
 	}
