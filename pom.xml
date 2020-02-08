@@ -7,7 +7,7 @@
     <groupId>com.corn</groupId>
     <artifactId>jloganalyzer</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>A log analyzer</name>
 
     <properties>
