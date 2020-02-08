@@ -6,7 +6,7 @@ I needed some tool for filtering logs. I found that Perl is ugly, and awk requir
 before I would be able to achieve my goals with it.
 
 So I stopped with Java. It takes less time to me to implement all I need comparing to use Perl/awk.
-And that fun after all..
+And that's fun after all..
 
 ```
  usage: jloganalyzer [options] file1 file2 ... fileN
