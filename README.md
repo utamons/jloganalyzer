@@ -20,3 +20,6 @@ And that's fun after all..
  -p,--pos <segments>           Prints only given <segments> of line in %1%2.. format
  -s,--silent                   Silent mode. Use with -cl
  -t,--to <date_to>             The date/time to read log to
+ ```
+ 
+ Use **mvn package** to create jar, and run it with java.
