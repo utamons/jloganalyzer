@@ -22,6 +22,7 @@ And that's fun after all..
  -t,--to <date_to>             The date/time to read log to <date_to>
  ```
  
+ As you can see - it's a command line tool, so it's possible to use it in scripts.
  Use **mvn package** to create jar, and run it with java.
  
  That's ehough for me at the moment. I don't need regexes or something more complex..
