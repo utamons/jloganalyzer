@@ -36,7 +36,7 @@ public class Parameters {
 	private final Pattern       grepPattern;
 	private final Instant       from;
 	private final Instant       to;
-	private final long          head;
+	private final Long          head;
 	private final List<File>    files;
 	private final List<Integer> pos;
 	private final boolean       count;
@@ -65,7 +65,7 @@ public class Parameters {
 		if (cmd.hasOption(HEAD))
 			head = Long.parseLong(cmd.getOptionValue(HEAD));
 		else
-			head = 0L;
+			head = null;
 
 		count = cmd.hasOption(COUNT_LINES);
 
@@ -144,7 +144,7 @@ public class Parameters {
 		return to;
 	}
 
-	public long getHead() {
+	public Long getHead() {
 		return head;
 	}
 
