@@ -7,10 +7,10 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 			Parameters parameters = new Parameters(args);
-			System.out.println("args = " + parameters.toString());
+			Reader reader = new Reader(parameters);
+			reader.go();
 		} catch (ParseException e) {
 			System.out.println(e.getMessage());
 		}
-
 	}
 }

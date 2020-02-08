@@ -122,7 +122,7 @@ public class Parameters {
 		}
 	}
 
-	private Instant parseDate(String dt) throws ParseException {
+	public Instant parseDate(String dt) throws ParseException {
 		try {
 			DateTimeFormatter fmt = DateTimeFormatter.ofPattern(dateFmt, Locale.US);
 			LocalDateTime     ldt = LocalDateTime.parse(dt, fmt);
