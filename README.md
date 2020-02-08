@@ -12,14 +12,16 @@ And that's fun after all..
  usage: jloganalyzer [options] file1 file2 ... fileN
  
  -cl,--count-lines             Counts printing lines
- -f,--from <date_from>        The date/time to read log fro
+ -f,--from <date_from>         The date/time to read log from <date_from>
  -fmt,--time-format <format>   Date/time format (using JavaDateTimeFormatter). By default - yyyy-MM-dd HH:mm:ss.SSS
  -g,--grep <string>            Prints only lines containing <string>
  -h,--head <lines>             Only prints the first head <lines>
  -help,--help                  Help
  -p,--pos <segments>           Prints only given <segments> of line in %1%2.. format
  -s,--silent                   Silent mode. Use with -cl
- -t,--to <date_to>             The date/time to read log to
+ -t,--to <date_to>             The date/time to read log to <date_to>
  ```
  
  Use **mvn package** to create jar, and run it with java.
+ 
+ That's ehough for me at the moment. I don't need regexes or something more complex..
