@@ -19,5 +19,4 @@ And that's fun after all..
  -help,--help                  Help
  -p,--pos <segments>           Prints only given <segments> of line in %1%2.. format
  -s,--silent                   Silent mode. Use with -cl
- -t,--to <date_to>             The date/time to read log to```
- 
+ -t,--to <date_to>             The date/time to read log to
