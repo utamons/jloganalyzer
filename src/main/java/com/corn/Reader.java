@@ -30,6 +30,9 @@ public class Reader {
 		for (File f : files) {
 			readFile(f);
 		}
+		if (parameters.isCount()) {
+			System.out.println("Lines " + count);
+		}
 	}
 
 	private void readFile(File file) throws IOException {
@@ -37,38 +40,42 @@ public class Reader {
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			String line;
 			while ((line = br.readLine()) != null) {
+				if (parameters.getHead() != null && count == parameters.getHead())
+					return;
 				Instant date = getInstant(line);
 				if (last == null && date != null && isDateFit(date))
 					last = date;
+				else if (last != null && date != null && !isDateFit(date))
+					last = null;
+
 				printFilteredLine(line, last, date);
 			}
 		}
 	}
 
 	private void printFilteredLine(String line, Instant last, Instant date) {
-		if ((date == null && last == null) || (date != null &&!isDateFit(date)))
+		if ((date == null && last == null) || (date != null && !isDateFit(date)))
 			return;
-		if (parameters.getGrepPattern() != null && !parameters.getGrepPattern().matcher(line).matches())
+		else if (parameters.getGrep() != null && !line.contains(parameters.getGrep()))
 			return;
-		if (parameters.getHead() != null && count == parameters.getHead())
-			return;
-		if (parameters.getPos() == null) {
-			System.out.println(line);
+		else if (parameters.isSilent()) {
 			++count;
+			return;
+		} else if (parameters.getPos() == null) {
+			System.out.println(line);
 		} else {
-			String[]      segments      = line.split("[\\s@&.?$+-]+");
+			String[]      segments      = line.split("[\\s+]+");
 			StringBuilder str           = new StringBuilder();
 			List<Integer> parametersPos = parameters.getPos();
-			for (int i = 0; i < parametersPos.size(); i++) {
-				int pos = parametersPos.get(i);
-				if (segments.length - 1 > pos)
-					str.append(segments[i]).append(" ");
+			for (int pos : parametersPos) {
+				if (segments.length >= pos)
+					str.append(segments[pos - 1]).append(" ");
 			}
 			if (str.length() > 0)
 				str.setLength(str.length() - 1);
 			System.out.println(str.toString());
-			++count;
 		}
+		++count;
 	}
 
 	private boolean isDateFit(Instant date) {
