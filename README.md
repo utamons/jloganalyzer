@@ -17,7 +17,7 @@ And that's fun after all..
  -g,--grep <string>            Prints only lines containing <string>
  -h,--head <lines>             Only prints the first <lines>
  -help,--help                  Help
- -p,--pos <segments>           Prints only given <segments> of line in %1%2.. format
+ -p,--pos <fields>             Prints only given <fields> of line in %1%2.. format similar to Awk $1$2
  -s,--silent                   Silent mode. Use with -cl
  -t,--to <date_to>             The date/time to read log to <date_to>
  ```
