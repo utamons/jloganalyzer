@@ -26,4 +26,4 @@ And that's fun after all..
 It's a command line tool, so it's possible to use it in scripts.
 Use **mvn package** to create jar, and run it with java.
  
-That's ehough for me at the moment.
+That's enough for me at the moment.
