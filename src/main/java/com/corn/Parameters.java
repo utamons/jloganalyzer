@@ -51,7 +51,7 @@ public class Parameters {
 				.addOption(Option.builder(FROM).longOpt("from").hasArg().desc("The date/time to read log from").argName("date_from").build())
 				.addOption(Option.builder(TO).longOpt("to").hasArg().desc("The date/time to read log to").argName("date_to").build())
 				.addOption(Option.builder(HEAD).longOpt("head").hasArg().desc("Only prints the first head <lines>").argName("lines").build())
-				.addOption(Option.builder(POS).longOpt("pos").hasArg().desc("Prints only given <fields> of line in %1%2.. format").argName("fields").build())
+				.addOption(Option.builder(POS).longOpt("pos").hasArg().desc("Prints only given <fields> of line in %1%2.. format, similar to Awk $1$2").argName("fields").build())
 				.addOption(Option.builder(GREP).longOpt("grep").hasArg().desc("Prints only lines containing <string>").argName("string").build())
 				.addOption(Option.builder(REGEXP).longOpt("regexp").hasArg().desc("Prints only lines matching <regexp>").argName("regexp").build())
 				.addOption(Option.builder(HELP).longOpt(HELP).hasArg(false).desc("Help").argName("string").build())
