@@ -18,6 +18,7 @@ And that's fun after all..
  -h,--head <lines>             Only prints the first <lines>
  -help,--help                  Help
  -p,--pos <fields>             Prints only given <fields> of line in %1%2.. format similar to Awk $1$2
+ -r,--regexp <regexp>          Prints only lines matching <regexp>
  -s,--silent                   Silent mode. Use with -cl
  -t,--to <date_to>             The date/time to read log to <date_to>
  ```
