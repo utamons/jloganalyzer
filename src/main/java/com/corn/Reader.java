@@ -58,6 +58,8 @@ public class Reader {
 			return;
 		else if (parameters.getGrep() != null && !line.contains(parameters.getGrep()))
 			return;
+		else if (parameters.getRegexp() != null && !parameters.getRegexp().matcher(line).matches())
+			return;
 		else if (parameters.isSilent()) {
 			++count;
 			return;

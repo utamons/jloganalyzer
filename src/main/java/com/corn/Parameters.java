@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import static java.lang.System.exit;
@@ -27,12 +28,14 @@ public class Parameters {
 	public static final  String  HEAD             = "h";
 	public static final  String  POS              = "p";
 	public static final  String  GREP             = "g";
+	public static final  String  REGEXP           = "r";
 	public static final  String  HELP             = "help";
 	public static final  String  COUNT_LINES      = "cl";
 	public static final  String  FMT              = "fmt";
 	public static final  String  DEFAULT_DATE_FMT = "yyyy-MM-dd HH:mm:ss.SSS";
 	private static final Pattern posPattern       = Pattern.compile("^(%\\d+)+");
 
+	private final Pattern       regexp;
 	private final String        grep;
 	private final Instant       from;
 	private final Instant       to;
@@ -50,6 +53,7 @@ public class Parameters {
 				.addOption(Option.builder(HEAD).longOpt("head").hasArg().desc("Only prints the first head <lines>").argName("lines").build())
 				.addOption(Option.builder(POS).longOpt("pos").hasArg().desc("Prints only given <fields> of line in %1%2.. format").argName("fields").build())
 				.addOption(Option.builder(GREP).longOpt("grep").hasArg().desc("Prints only lines containing <string>").argName("string").build())
+				.addOption(Option.builder(REGEXP).longOpt("regexp").hasArg().desc("Prints only lines matching <regexp>").argName("regexp").build())
 				.addOption(Option.builder(HELP).longOpt(HELP).hasArg(false).desc("Help").argName("string").build())
 				.addOption(Option.builder(COUNT_LINES).longOpt("count-lines").hasArg(false).desc("Counts printing lines").build())
 				.addOption(Option.builder(SILENT).longOpt("silent").hasArg(false).desc("Silent mode. Use with -" + COUNT_LINES).build())
@@ -77,10 +81,24 @@ public class Parameters {
 		else
 			pos = null;
 
+		if (cmd.hasOption(GREP) && cmd.hasOption(REGEXP)) {
+			throw new ParseException("Use either '"+GREP+"' or "+"'"+REGEXP+"' option.");
+		}
+
 		if (cmd.hasOption(GREP))
 			grep = cmd.getOptionValue(GREP);
 		else
 			grep = null;
+
+		if (cmd.hasOption(REGEXP)) {
+			String regexpStr = cmd.getOptionValue(REGEXP);
+			try {
+				regexp = Pattern.compile(regexpStr);
+			} catch (PatternSyntaxException e) {
+				throw new ParseException("regexp error: "+e.getMessage());
+			}
+		} else
+			regexp = null;
 
 		if (cmd.hasOption(FMT))
 			dateFmt = cmd.getOptionValue(FMT);
@@ -167,10 +185,15 @@ public class Parameters {
 		return silent;
 	}
 
+	public Pattern getRegexp() {
+		return regexp;
+	}
+
 	@Override
 	public String toString() {
 		return "Parameters{" +
-				"grep='" + grep + '\'' +
+				"regexp=" + (regexp==null? null :regexp.pattern()) + '\'' +
+				", grep='" + grep + '\'' +
 				", from=" + from +
 				", to=" + to +
 				", head=" + head +
