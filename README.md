@@ -28,6 +28,4 @@ It the --time-format is incorrect, jloganalyzer just skips all lines in the log.
  
 Use **mvn package** to create jar, and run it with java.
 
-
-
 That's enough for me at the moment.
