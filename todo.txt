@@ -1,0 +1,6 @@
+* Implement wildcards for file names
+* Indexing log files by dates
+* Search in S3 (?)
+* Lines before/after the pattern found
+* Search config/scenario
+
