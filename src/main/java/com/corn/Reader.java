@@ -37,6 +37,7 @@ public class Reader {
 
 	private void readFile(File file) throws IOException {
 		Instant last = null;
+		long hCount = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -48,21 +49,31 @@ public class Reader {
 				else if (last != null && date != null && !isDateFit(date))
 					last = null;
 
-				printFilteredLine(line, last, date);
+				if (hCount == 1) {
+					System.out.println("=============== END OF "+parameters.getHMatch()+" LINES AFTER MATCHED ONE =========");
+					System.out.println();
+					System.out.println("=============== NEXT MATCH OR EOF =========");
+					hCount = 0;
+				} else if (hCount>1) {
+					System.out.println(line);
+					hCount--;
+				} else if(printFilteredLine(line, last, date) && parameters.getHMatch() != null) {
+					hCount = parameters.getHMatch() + 1;
+				}
 			}
 		}
 	}
 
-	private void printFilteredLine(String line, Instant last, Instant date) {
+	private boolean printFilteredLine(String line, Instant last, Instant date) {
 		if ((date == null && last == null) || (date != null && !isDateFit(date)))
-			return;
+			return false;
 		else if (parameters.getGrep() != null && !line.contains(parameters.getGrep()))
-			return;
+			return false;
 		else if (parameters.getRegexp() != null && !parameters.getRegexp().matcher(line).matches())
-			return;
+			return false;
 		else if (parameters.isSilent()) {
 			++count;
-			return;
+			return false;
 		} else if (parameters.getPos() == null) {
 			System.out.println(line);
 		} else {
@@ -78,6 +89,7 @@ public class Reader {
 			System.out.println(str.toString());
 		}
 		++count;
+		return true;
 	}
 
 	private boolean isDateFit(Instant date) {

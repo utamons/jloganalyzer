@@ -26,6 +26,7 @@ public class Parameters {
 	public static final  String  FROM             = "f";
 	public static final  String  TO               = "t";
 	public static final  String  HEAD             = "h";
+	public static final  String  HEAD_MATCH       = "hm";
 	public static final  String  POS              = "p";
 	public static final  String  GREP             = "g";
 	public static final  String  REGEXP           = "r";
@@ -40,6 +41,7 @@ public class Parameters {
 	private final Instant       from;
 	private final Instant       to;
 	private final Long          head;
+	private final Long          hMatch;
 	private final List<File>    files;
 	private final List<Integer> pos;
 	private final boolean       count;
@@ -51,6 +53,7 @@ public class Parameters {
 				.addOption(Option.builder(FROM).longOpt("from").hasArg().desc("The date/time to read log from").argName("date_from").build())
 				.addOption(Option.builder(TO).longOpt("to").hasArg().desc("The date/time to read log to").argName("date_to").build())
 				.addOption(Option.builder(HEAD).longOpt("head").hasArg().desc("Only prints the first head <lines>").argName("lines").build())
+				.addOption(Option.builder(HEAD_MATCH).longOpt("hmatch").hasArg().desc("Prints the first head <lines> after every line found with -g or -r").argName("hmatch").build())
 				.addOption(Option.builder(POS).longOpt("pos").hasArg().desc("Prints only given <fields> of line in %1%2.. format, similar to Awk $1$2").argName("fields").build())
 				.addOption(Option.builder(GREP).longOpt("grep").hasArg().desc("Prints only lines containing <string>").argName("string").build())
 				.addOption(Option.builder(REGEXP).longOpt("regexp").hasArg().desc("Prints only lines matching <regexp>").argName("regexp").build())
@@ -72,6 +75,15 @@ public class Parameters {
 			head = Long.parseLong(cmd.getOptionValue(HEAD));
 		else
 			head = null;
+
+		if (cmd.hasOption(HEAD_MATCH)) {
+			if (cmd.hasOption(HEAD))
+				throw new ParseException("Use either '"+HEAD+"' or "+"'"+HEAD_MATCH+"' option.");
+			else if (!cmd.hasOption(GREP) && !cmd.hasOption(REGEXP))
+				throw new ParseException("Use '"+HEAD_MATCH+"' only with "+"'"+GREP+"' or '"+REGEXP+" option.");
+			hMatch = Long.parseLong(cmd.getOptionValue(HEAD_MATCH));
+		} else
+			hMatch = null;
 
 		silent = cmd.hasOption(SILENT);
 		count = cmd.hasOption(COUNT_LINES);
@@ -171,6 +183,10 @@ public class Parameters {
 
 	public List<Integer> getPos() {
 		return pos;
+	}
+
+	public Long getHMatch() {
+		return hMatch;
 	}
 
 	public boolean isCount() {
