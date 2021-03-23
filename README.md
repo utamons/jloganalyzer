@@ -16,6 +16,8 @@ And that's fun after all..
  -fmt,--time-format <format>   Date/time format (using JavaDateTimeFormatter). By default - yyyy-MM-dd HH:mm:ss.SSS
  -g,--grep <string>            Prints only lines containing <string>
  -h,--head <lines>             Only prints the first <lines>
+ -hm,--hmatch <hmatch>         Prints the first head <lines> after every
+                               line found with -g or -r
  -help,--help                  Help
  -p,--pos <fields>             Prints only given <fields> of line in %1%2.. format similar to Awk $1$2
  -r,--regexp <regexp>          Prints only lines matching <regexp>
